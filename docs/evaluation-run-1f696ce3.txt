@@ -1,0 +1,164 @@
+Model: qwen3.5:9b
+Model ayarları: {'num_ctx': 8192, 'num_predict': 1024, 'temperature': 0}
+Soru sayısı: 8
+Her soru uygulamanın mevcut akışıyla işlenecek.
+Veritabanından yüklenen parça: 14
+
+============================================================
+E01: Temel Paket kullanıyoruz. Çalışma alanında 8 aktif ve 2 askıya alınmış hesap var. Yeni bir kullanıcı daveti kabul edebilir mi?
+============================================================
+İlk belge araması yapılıyor...
+Sorgu embedding: 2.26 sn
+
+Step: 1
+LLM çağrısı: 9.43 sn
+Model yükleme: 0.07 sn
+Girdi işleme: 1.27 sn
+Üretim: 7.94 sn
+Bitiş nedeni: stop
+Üretilen token: 267
+Nihai yanıt: Hayır, yeni kullanıcı daveti kabul edilemez.
+
+Gerekçe:
+- Kullanıcı kapasitesi, bir çalışma alanındaki **aktif ve askıya alınmış hesapların toplamıdır** (Kaynak: packets.md#chunk-1).
+- Temel Paket'te maksimum kullanıcı sayısı **10'dur** (Kaynak: packets.md#chunk-3).
+- Mevcut durumunuzda 8 aktif + 2 askıya alınmış = **10 hesap** bulunmaktadır.
+- Davet kabul edilirken boş koltuk bulunması gerekir; kapasite dolu olduğundan davet kabul işlemi tamamlanamaz (Kaynak: packets.md#chunk-2).
+
+Not: Temel Paket'te kullanıcı sınırını artıran ek koltuk satın alımı bulunmamaktadır; bu durumda paket değişikliği yapılması gerekebilir (Kaynak: packets.md#chunk-4).
+Kaynaklar: packets.md#chunk-1, packets.md#chunk-2, packets.md#chunk-3, packets.md#chunk-4
+Sorudan yanıta toplam: 11.72 sn
+--------------------------------------------------
+
+============================================================
+E02: 6 çalışanımız var; SAML ile oturum açmamız ve SCIM ile kullanıcı yönetmemiz gerekiyor. Hangi paket gereksinimlerimizi karşılar?
+============================================================
+İlk belge araması yapılıyor...
+Sorgu embedding: 1.49 sn
+
+Step: 1
+LLM çağrısı: 5.40 sn
+Model yükleme: 0.08 sn
+Girdi işleme: 1.32 sn
+Üretim: 3.93 sn
+Bitiş nedeni: stop
+Üretilen token: 126
+Nihai yanıt: 6 çalışanınız olduğu için **Kurumsal Paket** gereksinimlerinizi karşılar. Temel Paket, en fazla 10 kullanıcı destekler ancak SAML ve SCIM özelliklerini içermez; Kurumsal Paket ise bu özellikleri (SAML tabanlı tek oturum açma ve SCIM kullanıcı sağlama) sunar ve 500 kullanıcı kapasitesine sahiptir.
+Kaynaklar: packets.md#chunk-3, packets.md#chunk-4
+Sorudan yanıta toplam: 6.89 sn
+--------------------------------------------------
+
+============================================================
+E03: 600 kullanıcılı tek çalışma alanı için belgelerdeki paketlerden hangisi yeterli?
+============================================================
+İlk belge araması yapılıyor...
+Sorgu embedding: 1.43 sn
+
+Step: 1
+LLM çağrısı: 5.36 sn
+Model yükleme: 0.07 sn
+Girdi işleme: 1.19 sn
+Üretim: 4.02 sn
+Bitiş nedeni: stop
+Üretilen token: 126
+Nihai yanıt: 600 kullanıcılı tek çalışma alanı için mevcut belgelerdeki paketlerden hiçbiri yeterli değildir. Kurumsal Paket maksimum 500 kullanıcı desteklerken, Temel Paket sadece 10 kullanıcıya izin verir. Belgelerde 600 kullanıcı kapasitesini karşılayacak bir üst paket veya kapasite istisnası tanımlanmamıştır.
+Kaynaklar: packets.md#chunk-4, packets.md#chunk-5
+Sorudan yanıta toplam: 6.79 sn
+--------------------------------------------------
+
+============================================================
+E04: İmzalı ek SLA kullanıyoruz. Pazar gecesi yalnızca bir kullanıcı giriş yapamıyor; diğerleri çalışıyor. Bir saatlik ilk insan yanıtı taahhüdü uygulanır mı?
+============================================================
+İlk belge araması yapılıyor...
+Sorgu embedding: 3.34 sn
+
+Step: 1
+LLM çağrısı: 14.05 sn
+Model yükleme: 0.26 sn
+Girdi işleme: 1.74 sn
+Üretim: 11.88 sn
+Bitiş nedeni: stop
+Üretilen token: 363
+Nihai yanıt: Hayır, bir saatlik ilk insan yanıtı taahhüdü uygulanmaz.
+
+Gerekçe:
+1. **Ek SLA Şartı:** Bir saatlik ilk insan yanıtı taahhüdü (P1 talepleri için), yalnızca 'Ek SLA' seçeneği ile imzalanan özel bir sözleşme kapsamında geçerlidir. Standart Kurumsal Paket satın alımı bu taahhüdü kendiliğinden etkinleştirmemektedir.
+2. **Sınıflandırma ve Saat:** Kullanıcının belirttiği durum (pazar gecesi, yalnızca bir kullanıcı giriş yapamıyor) standart politika tanımına göre P1 (tüm kullanıcıların temel hizmete erişememesi) veya P2/P3 olarak sınıflandırılabilir. Ancak, Ek SLA sözleşmesi imzalanmamışsa, sistem standart çalışma saatlerinde (hafta içi 09:00-18:00) yanıt verir ve pazar gecesi gibi saatlerde otomatik bir 'ilk insan yanıtı' taahhüdü bulunmamaktadır.
+3. **Taahhüdün Doğası:** Belgede belirtildiği üzere, P1 için verilen bir saatlik süre sadece 'ilk yanıt' süresidir; bu, çözüm garantisi değildir ve standart paketlerde pazar gecesi gibi saatler için geçerli değildir.
+Kaynaklar: destek_politikasi.md#chunk-6, destek_politikasi.md#chunk-5, destek_politikasi.md#chunk-1
+Sorudan yanıta toplam: 17.40 sn
+--------------------------------------------------
+
+============================================================
+E05: İmzalı ek SLA kullanıyoruz. Pazar gecesi tüm kullanıcılar temel hizmete erişemiyor ve kullanılabilir geçici çözüm yok. İlk insan yanıtı taahhüdü nedir?
+============================================================
+İlk belge araması yapılıyor...
+Sorgu embedding: 2.82 sn
+
+Step: 1
+LLM çağrısı: 9.78 sn
+Model yükleme: 0.17 sn
+Girdi işleme: 1.54 sn
+Üretim: 7.90 sn
+Bitiş nedeni: stop
+Üretilen token: 253
+Nihai yanıt: İmzalı Ek SLA (Kurumsal Paket kapsamında) kullanıldığında, P1 öncelikli destek talepleri için ilk insan yanıtı taahhüdü **bir saattir**. Bu taahhüt, hafta içi her gün ve günün her saati kapsar. Ancak, standart çalışma saatleri dışında (örneğin pazar gecesi) gelen taleplerin bu bir saatlik süre içinde değerlendirilmesi garanti edilmez; çünkü Ek SLA'nın telefon desteği ve acil yanıtı sadece 'haftanın her günü ve günün her saati' ifadesiyle tanımlanmış olup, standart çalışma saatleri dışındaki işlemlerin bu süreye dahil olup olmadığına dair spesifik bir istisna veya otomatik değerlendirme kuralı belgede yer almamaktadır. Ayrıca, imzalı SLA olmadan (standart paketlerde) sayısal ilk yanıt süresi garantisi verilmemektedir.
+Kaynaklar: destek_politikasi.md#chunk-6, destek_politikasi.md#chunk-4
+Sorudan yanıta toplam: 12.61 sn
+--------------------------------------------------
+
+============================================================
+E06: İmzalı ek SLA kullanıyoruz. Tüm kullanıcılar temel hizmete erişemiyor ama kullanılabilir geçici çözüm var. P1 için tanımlanan bir saatlik ilk insan yanıtı taahhüdü uygulanır mı?
+============================================================
+İlk belge araması yapılıyor...
+Sorgu embedding: 2.52 sn
+
+Step: 1
+LLM çağrısı: 8.23 sn
+Model yükleme: 0.08 sn
+Girdi işleme: 1.58 sn
+Üretim: 6.45 sn
+Bitiş nedeni: stop
+Üretilen token: 206
+Nihai yanıt: Hayır, P1 için tanımlanan bir saatlik ilk insan yanıtı taahhüdü uygulanmaz. Kullanıcılar temel hizmete erişemiyor ancak kullanılabilir geçici çözüm olduğu için durum **P2** (önemli özellik çalışmıyor ama kısmen kullanılabilir) olarak sınıflandırılır. P1 tanımı ise tüm kullanıcıların temel hizmete erişemediği ve **geçici çözüm bulunmadığı** durumu ifade eder. Ek SLA seçeneği yalnızca Kurumsal Paket müşterileri için ayrıca imzalanan bir sözleşmeyle etkinleştirilir; mevcut durumunuzda (temel hizmet erişimi yok ama geçici çözüm var) bu taahhüt otomatik olarak uygulanmaz.
+Kaynaklar: destek_politikasi.md#chunk-4, destek_politikasi.md#chunk-6
+Sorudan yanıta toplam: 10.76 sn
+--------------------------------------------------
+
+============================================================
+E07: Kurumsal Paket ve ek SLA'nın toplam aylık fiyatı nedir?
+============================================================
+İlk belge araması yapılıyor...
+Sorgu embedding: 2.20 sn
+
+Step: 1
+LLM çağrısı: 5.92 sn
+Model yükleme: 0.08 sn
+Girdi işleme: 1.63 sn
+Üretim: 4.11 sn
+Bitiş nedeni: stop
+Üretilen token: 134
+Nihai yanıt: Belgelerdeki fiyat bilgisi bulunmamaktadır. Kurumsal Paket'in aylık ücreti ve Ek SLA'nın ek maliyeti, müşteri sözleşmesinde veya faturalandırma belgesinde belirtildiği için mevcut kaynaklarda (packets.md ve destek_politikasi.md) toplam aylık fiyat hesaplanamamaktadır.
+Kaynaklar: destek_politikasi.md#chunk-6, destek_politikasi.md#chunk-7, packets.md#chunk-7
+Sorudan yanıta toplam: 8.13 sn
+--------------------------------------------------
+
+============================================================
+E08: Dosya depolama kotamız doldu. Mevcut dosyaları okuyabilir ve görevleri güncelleyebilir miyiz?
+============================================================
+İlk belge araması yapılıyor...
+Sorgu embedding: 2.20 sn
+
+Step: 1
+LLM çağrısı: 4.13 sn
+Model yükleme: 0.10 sn
+Girdi işleme: 1.44 sn
+Üretim: 2.50 sn
+Bitiş nedeni: stop
+Üretilen token: 76
+Nihai yanıt: Evet, dosya depolama kotanız dolduğu sürece mevcut dosyaları okuyabilir ve görevleri güncelleyebilirsiniz. Ancak yeni dosya yüklemeleri engellenir.
+Kaynaklar: packets.md
+Sorudan yanıta toplam: 6.34 sn
+--------------------------------------------------
+
+Değerlendirme soruları tamamlandı.

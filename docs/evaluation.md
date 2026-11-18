@@ -162,3 +162,90 @@ Doğru sonuçla birlikte yanlış gerekçe varsa genel değerlendirme geçti say
 Kaynak kimliğinin geçerli olması, iddiayı desteklediğini tek başına kanıtlamaz.
 İlk model yükleme maliyeti varsa ayrıca not edilir.
 Bu küçük setten genel doğruluk garantisi çıkarılmaz.
+
+## Sabit değerlendirme seti — 19 Kasım 2026
+
+### Çalıştırma koşulları
+
+- Sohbet modeli: qwen3.5:9b
+- Embedding modeli: embeddinggemma:300m
+- num_ctx: 8192
+- num_predict: 1024
+- temperature: 0
+- Ana uygulamada think: false
+- Kayıtlı parça sayısı: 14
+- Soru sayısı: 8
+- Her soru yeni mesaj geçmişiyle işlendi.
+- Soruların Türkçe karakterleri kontrol edildi.
+- Çalıştırma boyunca ayarlar değiştirilmedi.
+
+### Sonuçlar
+
+| ID | Sonuç ve gerekçe değerlendirmesi | Genel değerlendirme | Toplam süre | Model çağrısı |
+|---|---|---|---:|---:|
+| E01 | Aktif ve askıdaki hesapları birlikte saydı; kapasite doluluğunu doğru uyguladı. | Geçti | 11,72 sn | 1 |
+| E02 | Kurumsal Paket seçimi ve özellik açıklaması doğru. İlk cümlede seçimi 6 çalışan bulunmasına bağlaması özensiz. | Kısmi | 6,89 sn | 1 |
+| E03 | Mevcut paketlerin yetersiz olduğunu ve 500 kullanıcı üst sınırını doğru belirtti. | Geçti | 6,79 sn | 1 |
+| E04 | “Uygulanmaz” sonucu doğru; tek kullanıcı sorununu P1/P2/P3 olarak belirsizleştirdi ve imzalı SLA bilgisine rağmen standart saatleri gerekçeye karıştırdı. | Kaldı | 17,40 sn | 1 |
+| E05 | Bir saatlik taahhüdü söyledi; ardından kapsamı hafta içiyle sınırlayıp pazar gecesi için garanti bulunmadığını ileri sürdü. Cevap çelişkili. | Kaldı | 12,61 sn | 1 |
+| E06 | Geçici çözüm nedeniyle P1 koşulunun sağlanmadığını doğru açıkladı; yeterli dayanak olmadan kesin P2 sınıflandırması ekledi. | Kaldı | 10,76 sn | 1 |
+| E07 | Mevcut belgelerden toplam fiyatın hesaplanamayacağını doğru söyledi; sözleşme ve faturalandırma yönlendirmelerini genelleştirdi. | Kısmi | 8,13 sn | 1 |
+| E08 | Kotanın yalnızca yeni yüklemeleri engellediğini, okuma ve görev güncellemesini engellemediğini doğru söyledi. | Geçti | 6,34 sn | 1 |
+
+### Süre ölçümleri
+
+- Sekiz sorunun toplam süresi: 80,64 saniye.
+- Soru başına ortalama toplam süre: 10,08 saniye.
+- En kısa toplam süre: 6,34 saniye.
+- En uzun toplam süre: 17,40 saniye.
+- Ortalama sorgu embedding süresi: 2,28 saniye.
+- Ortalama LLM çağrısı süresi: 7,79 saniye.
+- Model yükleme süreleri 0,07–0,26 saniye arasındadır.
+  Bu çalıştırma, modelin ilk yükleme maliyetini temsil etmez.
+
+### Yorum
+
+Bu sekiz örnekte 3 cevap geçti, 2 cevap kısmi değerlendirildi,
+3 cevap ise hatalı veya desteklenmeyen gerekçeler içerdiği için kaldı.
+
+Bu sonuçlar genel bir doğruluk oranı değildir. Değerlendirme küçük,
+önceden bilinen bir soru seti üzerinde, tek çalıştırmaya dayanır.
+
+Kaynak kimlikleri döndürüldü; ancak bu kayıt tek başına bütün
+iddiaların kaynaklar tarafından desteklendiğini kanıtlamaz.
+
+Doğrudan özellik ve kapasite soruları daha başarılıdır.
+Birlikte gereken koşullar, sınıflandırmalar ve istisnalar hata
+görülen alanlardır.
+
+
+## Cevap uzunluğu sınırı denemesi — 19 Kasım 2026
+
+Amaç: Nihai cevap alanına 600 karakter sınırı koyarak üretim
+süresini azaltmak ve cevapların yeterliliğini karşılaştırmak.
+
+Model, promptlar ve arama ayarları değiştirilmedi.
+
+| Ölçüm | Sınırsız cevap | 600 karakter sınırı |
+|---|---:|---:|
+| Ortalama toplam süre | 10,08 sn | 7,27 sn |
+| Sekiz sorunun toplam süresi | 80,64 sn | 58,14 sn |
+
+### Gözlemler
+
+- E01, E04 ve E05 cevapları cümle tamamlanmadan sona erdi.
+- Çıktılar geçerli JSON biçimindeydi ve bitiş nedeni `stop` idi.
+  Bu durum, cevap metninin tamamlanmış olduğunu göstermedi.
+- E04, E05 ve E06'daki anlam ve gerekçe hataları devam etti.
+- Embedding ve girdi işleme süreleri de değiştiği için süre
+  farkının tamamı karakter sınırına bağlanamaz.
+
+### Karar
+
+Değişiklik kabul edilmedi. Daha kısa süreye rağmen yarım cevaplar
+oluştuğu ve doğruluk iyileşmesi gösterilmediği için 600 karakter
+sınırı kaldırıldı.
+
+Sınıra ait iki test kaldırıldı; kalan 13 otomatik test geçti.
+
+Ham çıktı: [600 karakter sınırı denemesi](evaluation-run-d1648913.txt)
