@@ -1,0 +1,13 @@
+ollama==0.6.3
+numpy==2.4.6
+rank-bm25==0.2.2
+
+# PostgreSQL sunucusu ve pgvector uzantısı ayrıca kurulmalıdır.
+# Aşağıdaki pgvector paketi yalnızca Python entegrasyonudur.
+
+psycopg[binary]==3.3.9
+pgvector==0.5.1
+python-dotenv==1.2.3
+
+
+# Kurulum: python -m pip install -r requirements.txt
