@@ -249,3 +249,38 @@ sınırı kaldırıldı.
 Sınıra ait iki test kaldırıldı; kalan 13 otomatik test geçti.
 
 Ham çıktı: [600 karakter sınırı denemesi](evaluation-run-d1648913.txt)
+
+## Ölçülen sonuçlar
+
+qwen3.5:9b ile sekiz soruluk sabit değerlendirme seti çalıştırıldı.
+Her soru yeni mesaj geçmişiyle, aynı model ve arama ayarlarıyla işlendi.
+
+| Ölçüm | Sonuç |
+|---|---:|
+| Soru sayısı | 8 |
+| Ortalama toplam yanıt süresi | 10,08 sn |
+| En kısa yanıt süresi | 6,34 sn |
+| En uzun yanıt süresi | 17,40 sn |
+| Soru başına model çağrısı | 1 |
+
+Model, bu çalıştırmada büyük ölçüde bellekteydi; süreler ilk model
+yükleme maliyetini temsil etmez.
+
+Kapasite ve özellik sorularında doğru cevaplar elde edildi.
+Koşul eşleştirme, sınıflandırma ve istisna yorumlamada hatalar görüldü.
+Bu küçük soru setinden genel bir doğruluk oranı çıkarılmamıştır.
+
+600 karakterlik cevap sınırı denemesinde ortalama süre 7,27 saniyeye
+düştü; ancak yarım cevaplar oluştu ve anlam hataları devam etti.
+Girdi işleme ve embedding süreleri de değiştiğinden farkın tamamı
+karakter sınırına bağlanamaz. Değişiklik geri alındı.
+
+- [Ayrıntılı değerlendirme](docs/evaluation.md)
+- [Başlangıç ölçümünün ham çıktısı](docs/evaluation-run-1f696ce3.txt)
+- [Reddedilen karakter sınırı denemesinin ham çıktısı](docs/evaluation-run-d1648913.txt)
+## Ayrı ortamda paket kurulumu kontrolü — 19 Kasım 2026
+
+GitHub deposu ayrı bir klasöre klonlandı. Yeni bir Python sanal
+ortamında `pip install -e .` ile kurulum tamamlandı ve 13 otomatik
+test geçti. Kontrol aynı bilgisayarda yapıldı; veritabanı kurulumu,
+migration, indeksleme ve gerçek model çağrısı kapsam dışında kaldı.
